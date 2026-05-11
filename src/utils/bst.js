@@ -24,10 +24,6 @@ export const createNode = (value) => ({
 
 /**
  * Inserta un valor en el árbol.
- * 
- * BUG #1: Esta función siempre inserta a la derecha.
- * BUG #2: No maneja el caso en que `node` es null desde el inicio
- *         (falla silenciosamente en el primer insert si el root es null).
  *
  * @param {object|null} node - Nodo raíz del subárbol actual
  * @param {number} value - Valor a insertar
@@ -35,11 +31,9 @@ export const createNode = (value) => ({
  */
 export const insert = (node, value) => {
   if (node === null) {
-    return createNode(value); // ← Esto está bien, pero ¿cuándo se usa?
+    return createNode(value);
   }
 
-  // BUG: La comparación siempre va a la derecha
-  // Debería ir a la izquierda cuando value < node.value
   if (value > node.value) {
     return {
       ...node,
@@ -47,22 +41,18 @@ export const insert = (node, value) => {
     };
   }
 
-  if (value > node.value) { // ← BUG: condición duplicada e incorrecta
+  if (value < node.value) {
     return {
       ...node,
-      right: insert(node.right, value),
+      left: insert(node.left, value),
     };
   }
 
-  // Los duplicados simplemente caen aquí y retornan el nodo sin cambios
   return node;
 };
 
 /**
  * Busca un valor en el árbol.
- *
- * BUG #3: Usa == en vez de ===, lo que causa coerción de tipos.
- * Buscar "5" (string) encontrará el nodo con valor 5 (number).
  *
  * @param {object|null} node
  * @param {number|string} value
@@ -71,8 +61,7 @@ export const insert = (node, value) => {
 export const search = (node, value) => {
   if (node === null) return null;
 
-  // BUG: == permite coerción: search(root, "10") === search(root, 10)
-  if (node.value == value) return node; // eslint-disable-line eqeqeq
+  if (node.value === value) return node;
 
   if (value < node.value) {
     return search(node.left, value);
