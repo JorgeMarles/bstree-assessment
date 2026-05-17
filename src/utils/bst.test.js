@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { createNode, getHeight, inOrder, insert, postOrder, preOrder, search } from "./bst";
+import { createNode, getHeight, inOrder, insert, postOrder, preOrder, search, toD3Format } from "./bst";
 
 describe("insert", () => {
   it("should place smaller values on the left", () => {
@@ -235,5 +235,139 @@ describe("getHeight", () => {
     };
 
     expect(getHeight(root)).toBe(4);
+  });
+});
+
+describe("toD3Format", () => {
+  it("should return null for null node", () => {
+    expect(toD3Format(null)).toBeNull();
+  });
+
+  it("should convert single node to d3 format", () => {
+    const root = createNode(10);
+
+    expect(toD3Format(root)).toEqual({
+      name: "10",
+      children: [],
+    });
+  });
+
+  it("should convert node with both children", () => {
+    const root = {
+      value: 10,
+      left: createNode(5),
+      right: createNode(15),
+    };
+
+    expect(toD3Format(root)).toEqual({
+      name: "10",
+      children: [
+        { name: "5", children: [] },
+        { name: "15", children: [] },
+      ],
+    });
+  });
+
+  it("should convert node with only left child", () => {
+    const root = {
+      value: 10,
+      left: createNode(5),
+      right: null,
+    };
+
+    expect(toD3Format(root)).toEqual({
+      name: "10",
+      children: [{ name: "5", children: [] }],
+    });
+  });
+
+  it("should convert node with only right child", () => {
+    const root = {
+      value: 10,
+      left: null,
+      right: createNode(15),
+    };
+
+    expect(toD3Format(root)).toEqual({
+      name: "10",
+      children: [{ name: "15", children: [] }],
+    });
+  });
+
+  it("should convert deep tree with nested children", () => {
+    const root = {
+      value: 10,
+      left: {
+        value: 5,
+        left: createNode(3),
+        right: createNode(7),
+      },
+      right: {
+        value: 15,
+        left: null,
+        right: createNode(20),
+      },
+    };
+
+    expect(toD3Format(root)).toEqual({
+      name: "10",
+      children: [
+        {
+          name: "5",
+          children: [
+            { name: "3", children: [] },
+            { name: "7", children: [] },
+          ],
+        },
+        {
+          name: "15",
+          children: [{ name: "20", children: [] }],
+        },
+      ],
+    });
+  });
+
+  it("should convert right-skewed tree (only right children)", () => {
+    const root = {
+      value: 10,
+      left: null,
+      right: {
+        value: 15,
+        left: null,
+        right: createNode(20),
+      },
+    };
+
+    expect(toD3Format(root)).toEqual({
+      name: "10",
+      children: [
+        {
+          name: "15",
+          children: [{ name: "20", children: [] }],
+        },
+      ],
+    });
+  });
+
+  it("should convert left-skewed tree (only left children)", () => {
+    const root = {
+      value: 10,
+      left: {
+        value: 5,
+        left: createNode(3),
+        right: null,
+      },
+      right: null,
+    };
+
+    expect(toD3Format(root)).toEqual({
+      name: "10",
+      children: [
+        {
+          name: "5",
+          children: [{ name: "3", children: [] }],
+        },
+      ],
+    });
   });
 });
