@@ -76,7 +76,6 @@ export const search = (node, value) => {
  * Recorrido In-Order (izquierda → raíz → derecha).
  * En un BST válido, produce los valores en orden ascendente.
  *
- * TODO: Implementar esta función.
  * Debe retornar un array de valores en orden in-order.
  *
  * @param {object|null} node
@@ -98,8 +97,6 @@ const inOrderRecursive = (node, arr) => {
 /**
  * Recorrido Pre-Order (raíz → izquierda → derecha).
  *
- * TODO: Implementar esta función.
- *
  * @param {object|null} node
  * @returns {number[]}
  */
@@ -118,8 +115,6 @@ const preOrderRecursive = (node, arr) => {
 
 /**
  * Recorrido Post-Order (izquierda → derecha → raíz).
- *
- * TODO: Implementar esta función.
  *
  * @param {object|null} node
  * @returns {number[]}
