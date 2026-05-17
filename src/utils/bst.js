@@ -83,8 +83,16 @@ export const search = (node, value) => {
  * @returns {number[]}
  */
 export const inOrder = (node) => {
-  // TODO: Implementar
-  return [];
+  const arr = [];
+  inOrderRecursive(node, arr);
+  return arr;
+};
+
+const inOrderRecursive = (node, arr) => {
+  if (node === null) return;
+  inOrderRecursive(node.left, arr);
+  arr.push(node.value);
+  inOrderRecursive(node.right, arr);
 };
 
 /**
@@ -96,8 +104,16 @@ export const inOrder = (node) => {
  * @returns {number[]}
  */
 export const preOrder = (node) => {
-  // TODO: Implementar
-  return [];
+  const arr = [];
+  preOrderRecursive(node, arr);
+  return arr;
+};
+
+const preOrderRecursive = (node, arr) => {
+  if (node === null) return;
+  arr.push(node.value);
+  preOrderRecursive(node.left, arr);
+  preOrderRecursive(node.right, arr);
 };
 
 /**
@@ -109,8 +125,16 @@ export const preOrder = (node) => {
  * @returns {number[]}
  */
 export const postOrder = (node) => {
-  // TODO: Implementar
-  return [];
+  const arr = [];
+  postOrderRecursive(node, arr);
+  return arr;
+};
+
+const postOrderRecursive = (node, arr) => {
+  if (node === null) return;
+  postOrderRecursive(node.left, arr);
+  postOrderRecursive(node.right, arr);
+  arr.push(node.value);
 };
 
 // ─── Tree Transformation ─────────────────────────────────────────────────────
