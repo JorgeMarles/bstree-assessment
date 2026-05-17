@@ -11,7 +11,15 @@
 import { useState, useCallback } from "react";
 import Tree from "react-d3-tree";
 
-import { insert, search, inOrder, preOrder, postOrder, toD3Format, randomInt } from "../utils/bst";
+import {
+  insert,
+  search,
+  inOrder,
+  preOrder,
+  postOrder,
+  toD3Format,
+  randomInt,
+} from "../utils/bst";
 import TraversalPanel from "./TraversalPanel";
 import SearchBar from "./SearchBar";
 
@@ -22,22 +30,26 @@ import styles from "./BSTVisualizer.module.css";
 // Pista: ¿qué hook de React sirve para memoizar una función?
 const getTraversalResult = (root, type) => {
   switch (type) {
-    case "inOrder":   return inOrder(root);
-    case "preOrder":  return preOrder(root);
-    case "postOrder": return postOrder(root);
-    default: return [];
+    case "inOrder":
+      return inOrder(root);
+    case "preOrder":
+      return preOrder(root);
+    case "postOrder":
+      return postOrder(root);
+    default:
+      return [];
   }
 };
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export default function BSTVisualizer() {
-  const [root, setRoot]                   = useState(null);
-  const [inputValue, setInputValue]       = useState("");
-  const [activeTraversal, setTraversal]   = useState(null); // "inOrder" | "preOrder" | "postOrder"
-  const [searchTerm, setSearchTerm]       = useState("");
-  const [foundNode, setFoundNode]         = useState(null);
-  const [errorMessage, setErrorMessage]   = useState("");
+  const [root, setRoot] = useState(null);
+  const [inputValue, setInputValue] = useState("");
+  const [activeTraversal, setTraversal] = useState(null); // "inOrder" | "preOrder" | "postOrder"
+  const [searchTerm, setSearchTerm] = useState("");
+  const [foundNode, setFoundNode] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // ── Insert ──────────────────────────────────────────────────────────────────
   const handleInsert = () => {
@@ -67,7 +79,7 @@ export default function BSTVisualizer() {
   };
 
   // ── Derived data ────────────────────────────────────────────────────────────
-  const d3Data     = root ? toD3Format(root) : null;
+  const d3Data = root ? toD3Format(root) : null;
 
   // BUG #5 continúa: traversalResult se recalcula en cada render,
   // no solo cuando root o activeTraversal cambian.
@@ -78,13 +90,15 @@ export default function BSTVisualizer() {
   // ── Node Rendering ──────────────────────────────────────────────────────────
   /**
    * Función de render personalizada para cada nodo del árbol.
-   * TODO: El estudiante debe modificar esto para que los nodos
-   * que coincidan con `foundNode` se resalten visualmente.
    */
   const renderCustomNode = ({ nodeDatum }) => (
     <g>
-      {/* TODO: Cambiar el color del círculo si nodeDatum.name === String(foundNode) */}
-      <circle r={20} fill="#4A90D9" stroke="#fff" strokeWidth={2} />
+      <circle
+        r={20}
+        fill={nodeDatum.name === String(foundNode) ? "#FFB31A" : "#4A90D9"}
+        stroke="#fff"
+        strokeWidth={2}
+      />
       <text
         fill="white"
         textAnchor="middle"
@@ -116,7 +130,10 @@ export default function BSTVisualizer() {
           <button onClick={handleInsert} className={styles.button}>
             Insertar
           </button>
-          <button onClick={handleRandomInsert} className={`${styles.button} ${styles.secondary}`}>
+          <button
+            onClick={handleRandomInsert}
+            className={`${styles.button} ${styles.secondary}`}
+          >
             🎲 Aleatorio
           </button>
         </div>
