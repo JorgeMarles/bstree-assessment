@@ -76,41 +76,60 @@ export const search = (node, value) => {
  * Recorrido In-Order (izquierda → raíz → derecha).
  * En un BST válido, produce los valores en orden ascendente.
  *
- * TODO: Implementar esta función.
  * Debe retornar un array de valores en orden in-order.
  *
  * @param {object|null} node
  * @returns {number[]}
  */
 export const inOrder = (node) => {
-  // TODO: Implementar
-  return [];
+  const arr = [];
+  inOrderRecursive(node, arr);
+  return arr;
+};
+
+const inOrderRecursive = (node, arr) => {
+  if (node === null) return;
+  inOrderRecursive(node.left, arr);
+  arr.push(node.value);
+  inOrderRecursive(node.right, arr);
 };
 
 /**
  * Recorrido Pre-Order (raíz → izquierda → derecha).
  *
- * TODO: Implementar esta función.
- *
  * @param {object|null} node
  * @returns {number[]}
  */
 export const preOrder = (node) => {
-  // TODO: Implementar
-  return [];
+  const arr = [];
+  preOrderRecursive(node, arr);
+  return arr;
+};
+
+const preOrderRecursive = (node, arr) => {
+  if (node === null) return;
+  arr.push(node.value);
+  preOrderRecursive(node.left, arr);
+  preOrderRecursive(node.right, arr);
 };
 
 /**
  * Recorrido Post-Order (izquierda → derecha → raíz).
  *
- * TODO: Implementar esta función.
- *
  * @param {object|null} node
  * @returns {number[]}
  */
 export const postOrder = (node) => {
-  // TODO: Implementar
-  return [];
+  const arr = [];
+  postOrderRecursive(node, arr);
+  return arr;
+};
+
+const postOrderRecursive = (node, arr) => {
+  if (node === null) return;
+  postOrderRecursive(node.left, arr);
+  postOrderRecursive(node.right, arr);
+  arr.push(node.value);
 };
 
 // ─── Tree Transformation ─────────────────────────────────────────────────────
@@ -121,10 +140,6 @@ export const postOrder = (node) => {
  * react-d3-tree espera: { name: string, children: Array }
  * Nuestra estructura interna es: { value: number, left: Node|null, right: Node|null }
  *
- * BUG #4 (sutil): Esta función ignora el hijo derecho cuando un nodo
- * tiene SOLO hijo derecho (no tiene hijo izquierdo).
- * Pruébalo insertando: 10, 15, 20 → el árbol visual se rompe.
- *
  * @param {object|null} node
  * @returns {object|null} - Nodo en formato react-d3-tree, o null
  */
@@ -133,13 +148,11 @@ export const toD3Format = (node) => {
 
   const children = [];
 
-  // BUG: Si node.left es null pero node.right no, nunca se agrega node.right
   if (node.left !== null) {
     children.push(toD3Format(node.left));
-
-    if (node.right !== null) {
-      children.push(toD3Format(node.right));
-    }
+  }
+  if (node.right !== null) {
+    children.push(toD3Format(node.right));
   }
 
   return {
@@ -152,14 +165,14 @@ export const toD3Format = (node) => {
 
 /**
  * Calcula la altura del árbol.
- * TODO: Implementar. Útil para validar que el BST está balanceado.
+ * Se implementa Altura basada en nodos, por lo que un arbol vacío tendrá altura 0
  *
  * @param {object|null} node
  * @returns {number}
  */
 export const getHeight = (node) => {
-  // TODO: Implementar
-  return 0;
+  if (node === null) return 0;
+  return 1 + Math.max(getHeight(node.right), getHeight(node.left));
 };
 
 /**
