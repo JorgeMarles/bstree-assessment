@@ -75,7 +75,7 @@ export default function BSTVisualizer() {
   };
 
   // ── Derived data ────────────────────────────────────────────────────────────
-  const d3Data = root ? toD3Format(root) : null;
+  const d3Data = useMemo(() => (root ? toD3Format(root) : null), [root]);
 
   const traversalResult = useMemo(
     () => (activeTraversal ? getTraversalResult(root, activeTraversal) : []),
