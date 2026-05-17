@@ -8,7 +8,7 @@
  * Usa React DevTools Profiler para encontrarlos.
  */
 
-import { useState, useCallback } from "react";
+import { useState, useMemo } from "react";
 import Tree from "react-d3-tree";
 
 import {
@@ -25,9 +25,6 @@ import SearchBar from "./SearchBar";
 
 import styles from "./BSTVisualizer.module.css";
 
-// BUG #5 (Performance): Esta función se recrea en cada render.
-// Cuando el árbol tiene 20+ nodos, el re-render se siente lento.
-// Pista: ¿qué hook de React sirve para memoizar una función?
 const getTraversalResult = (root, type) => {
   switch (type) {
     case "inOrder":
@@ -80,11 +77,10 @@ export default function BSTVisualizer() {
   // ── Derived data ────────────────────────────────────────────────────────────
   const d3Data = root ? toD3Format(root) : null;
 
-  // BUG #5 continúa: traversalResult se recalcula en cada render,
-  // no solo cuando root o activeTraversal cambian.
-  const traversalResult = activeTraversal
-    ? getTraversalResult(root, activeTraversal)
-    : [];
+  const traversalResult = useMemo(
+    () => (activeTraversal ? getTraversalResult(root, activeTraversal) : []),
+    [activeTraversal, root],
+  );
 
   // ── Node Rendering ──────────────────────────────────────────────────────────
   /**
