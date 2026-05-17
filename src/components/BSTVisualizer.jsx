@@ -2,13 +2,9 @@
  * BSTVisualizer.jsx
  *
  * Componente principal del visualizador de Árbol Binario de Búsqueda.
- *
- * ⚠️  NOTA PARA EL ESTUDIANTE:
- * Este componente tiene problemas de rendimiento y un bug de UX.
- * Usa React DevTools Profiler para encontrarlos.
  */
 
-import { useState, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import Tree from "react-d3-tree";
 
 import {
@@ -25,9 +21,6 @@ import SearchBar from "./SearchBar";
 
 import styles from "./BSTVisualizer.module.css";
 
-// BUG #5 (Performance): Esta función se recrea en cada render.
-// Cuando el árbol tiene 20+ nodos, el re-render se siente lento.
-// Pista: ¿qué hook de React sirve para memoizar una función?
 const getTraversalResult = (root, type) => {
   switch (type) {
     case "inOrder":
@@ -78,36 +71,38 @@ export default function BSTVisualizer() {
   };
 
   // ── Derived data ────────────────────────────────────────────────────────────
-  const d3Data = root ? toD3Format(root) : null;
+  const d3Data = useMemo(() => (root ? toD3Format(root) : null), [root]);
 
-  // BUG #5 continúa: traversalResult se recalcula en cada render,
-  // no solo cuando root o activeTraversal cambian.
-  const traversalResult = activeTraversal
-    ? getTraversalResult(root, activeTraversal)
-    : [];
+  const traversalResult = useMemo(
+    () => (activeTraversal ? getTraversalResult(root, activeTraversal) : []),
+    [activeTraversal, root],
+  );
 
   // ── Node Rendering ──────────────────────────────────────────────────────────
   /**
    * Función de render personalizada para cada nodo del árbol.
    */
-  const renderCustomNode = ({ nodeDatum }) => (
-    <g>
-      <circle
-        r={20}
-        fill={nodeDatum.name === String(foundNode) ? "#FFB31A" : "#4A90D9"}
-        stroke="#fff"
-        strokeWidth={2}
-      />
-      <text
-        fill="white"
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontSize={12}
-        fontWeight="bold"
-      >
-        {nodeDatum.name}
-      </text>
-    </g>
+  const renderCustomNode = useCallback(
+    ({ nodeDatum }) => (
+      <g>
+        <circle
+          r={20}
+          fill={nodeDatum.name === String(foundNode) ? "#FFB31A" : "#4A90D9"}
+          stroke="#fff"
+          strokeWidth={2}
+        />
+        <text
+          fill="white"
+          textAnchor="middle"
+          dominantBaseline="central"
+          fontSize={12}
+          fontWeight="bold"
+        >
+          {nodeDatum.name}
+        </text>
+      </g>
+    ),
+    [foundNode],
   );
 
   // ── Render ──────────────────────────────────────────────────────────────────
